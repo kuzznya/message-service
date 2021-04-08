@@ -1,5 +1,6 @@
 package com.github.kuzznya.jb.message.model;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Value;
@@ -17,13 +18,13 @@ public class MessageTemplate {
     List<URI> recipients;
 
     @JsonCreator
-    public MessageTemplate(@JsonProperty(value = "templateId", required = true) String id,
+    public MessageTemplate(@JsonProperty(value = "templateId", required = true) @JsonAlias("id") String id,
                            @JsonProperty(value = "template", required = true) String template,
                            @JsonProperty(value = "variables") List<TemplateVariable> variables,
                            @JsonProperty(value = "recipients", required = true) List<URI> recipients) {
         this.id = id;
         this.template = template;
         this.variables = variables != null ? variables : Collections.emptyList();
-        this.recipients = recipients;
+        this.recipients = recipients != null ? recipients : Collections.emptyList();
     }
 }

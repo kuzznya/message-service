@@ -1,6 +1,7 @@
 package com.github.kuzznya.jb.message.service;
 
 import com.github.kuzznya.jb.message.config.WebConfiguration;
+import com.github.kuzznya.jb.message.service.sender.WebSenderService;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

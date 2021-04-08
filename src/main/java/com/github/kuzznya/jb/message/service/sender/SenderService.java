@@ -1,4 +1,4 @@
-package com.github.kuzznya.jb.message.service;
+package com.github.kuzznya.jb.message.service.sender;
 
 import java.net.URI;
 

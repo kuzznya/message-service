@@ -1,11 +1,10 @@
-package com.github.kuzznya.jb.message.service.spel;
+package com.github.kuzznya.jb.message.service.template;
 
 import com.github.kuzznya.jb.message.exception.TemplateProcessingException;
 import com.github.kuzznya.jb.message.model.MessageTemplate;
 import com.github.kuzznya.jb.message.model.MessageVariable;
 import com.github.kuzznya.jb.message.model.TemplateVariable;
 import com.github.kuzznya.jb.message.model.VariableType;
-import com.github.kuzznya.jb.message.service.TemplateResolver;
 import org.junit.jupiter.api.Test;
 
 import java.util.Collections;
@@ -14,9 +13,9 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-class SpelTemplateResolverTest {
+class SpelTemplateProcessorTest {
 
-    private final TemplateResolver resolver = new SpelTemplateResolver();
+    private final TemplateProcessor resolver = new SpelTemplateProcessor();
 
     @Test
     void resolve_WhenValidTemplateWithInt_ReturnValidMessage() {
@@ -40,7 +39,7 @@ class SpelTemplateResolverTest {
                 "Test $undefinedVar$ test",
                 List.of(new TemplateVariable("var1", VariableType.STRING)),
                 Collections.emptyList());
-        assertThrows(TemplateProcessingException.class, () -> resolver.resolve(template, Collections.emptyList()));
+        assertThrows(TemplateProcessingException.class, () -> resolver.process(template, Collections.emptyList()));
     }
 
     @Test
@@ -56,7 +55,22 @@ class SpelTemplateResolverTest {
                 new MessageVariable("intVar", "1"),
                 new MessageVariable("floatVar", "2.5"),
                 new MessageVariable("strVar", "Test var"));
-        assertEquals("Int value: 1, float value: 2.5, string value: Test var", resolver.resolve(template, vars));
+        assertEquals("Int value: 1, float value: 2.5, string value: Test var", resolver.process(template, vars));
+    }
+
+    @Test
+    void resolve_WhenVarWithoutDefinition_ReturnValidMessage() {
+        var prefix = "Not templated string with ";
+        var postfix = " value";
+        var varName = "var1";
+        var value = "test value without definition";
+        var template = new MessageTemplate(
+                "template1",
+                prefix + "$" + varName + "$" + postfix,
+                Collections.emptyList(),
+                List.of());
+        String result = resolver.process(template, List.of(new MessageVariable(varName, value)));
+        assertEquals(prefix + value + postfix, result);
     }
 
     private void resolveVar(String value, VariableType type) {
@@ -68,7 +82,7 @@ class SpelTemplateResolverTest {
                 prefix + "$" + varName + "$" + postfix,
                 List.of(new TemplateVariable("var1", type)),
                 List.of());
-        String result = resolver.resolve(template, List.of(new MessageVariable(varName, value)));
+        String result = resolver.process(template, List.of(new MessageVariable(varName, value)));
         assertEquals(prefix + value + postfix, result);
     }
 }

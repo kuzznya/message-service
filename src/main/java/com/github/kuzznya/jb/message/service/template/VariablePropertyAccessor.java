@@ -1,4 +1,4 @@
-package com.github.kuzznya.jb.message.service.spel;
+package com.github.kuzznya.jb.message.service.template;
 
 import org.springframework.expression.AccessException;
 import org.springframework.expression.EvaluationContext;
@@ -7,7 +7,7 @@ import org.springframework.expression.TypedValue;
 
 public class VariablePropertyAccessor implements PropertyAccessor {
 
-    static final Object rootObject = new Object();
+    static final Object ROOT_OBJECT = new Object();
 
     @Override
     public Class<?>[] getSpecificTargetClasses() {
@@ -16,12 +16,12 @@ public class VariablePropertyAccessor implements PropertyAccessor {
 
     @Override
     public boolean canRead(EvaluationContext context, Object target, String name) {
-        return target == rootObject && context.lookupVariable(name) != null;
+        return target == ROOT_OBJECT && context.lookupVariable(name) != null;
     }
 
     @Override
     public TypedValue read(EvaluationContext context, Object target, String name) throws AccessException {
-        if (target != rootObject)
+        if (target != ROOT_OBJECT)
             throw new AccessException("Target objects are not allowed");
         var value = context.lookupVariable(name);
         if (value == null)

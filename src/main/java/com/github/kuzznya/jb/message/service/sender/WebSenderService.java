@@ -1,4 +1,4 @@
-package com.github.kuzznya.jb.message.service;
+package com.github.kuzznya.jb.message.service.sender;
 
 import com.github.kuzznya.jb.message.exception.MessageSendException;
 import com.github.kuzznya.jb.message.model.Message;
