@@ -10,12 +10,11 @@ import org.junit.jupiter.api.Test;
 import java.util.Collections;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 class SpelTemplateProcessorTest {
 
-    private final TemplateProcessor resolver = new SpelTemplateProcessor();
+    private final TemplateProcessor processor = new SpelTemplateProcessor();
 
     @Test
     void resolve_WhenValidTemplateWithInt_ReturnValidMessage() {
@@ -39,7 +38,7 @@ class SpelTemplateProcessorTest {
                 "Test $undefinedVar$ test",
                 List.of(new TemplateVariable("var1", VariableType.STRING)),
                 Collections.emptyList());
-        assertThrows(TemplateProcessingException.class, () -> resolver.process(template, Collections.emptyList()));
+        assertThrows(TemplateProcessingException.class, () -> processor.process(template, Collections.emptyList()));
     }
 
     @Test
@@ -55,7 +54,7 @@ class SpelTemplateProcessorTest {
                 new MessageVariable("intVar", "1"),
                 new MessageVariable("floatVar", "2.5"),
                 new MessageVariable("strVar", "Test var"));
-        assertEquals("Int value: 1, float value: 2.5, string value: Test var", resolver.process(template, vars));
+        assertEquals("Int value: 1, float value: 2.5, string value: Test var", processor.process(template, vars));
     }
 
     @Test
@@ -68,9 +67,19 @@ class SpelTemplateProcessorTest {
                 "template1",
                 prefix + "$" + varName + "$" + postfix,
                 Collections.emptyList(),
-                List.of());
-        String result = resolver.process(template, List.of(new MessageVariable(varName, value)));
+                Collections.emptyList());
+        String result = processor.process(template, List.of(new MessageVariable(varName, value)));
         assertEquals(prefix + value + postfix, result);
+    }
+
+    @Test
+    void resolve_WhenDollarWithEscapeChar_DoNotSubstitute() {
+        var template = new MessageTemplate(
+                "template1",
+                "Template with \\$\\$\\$",
+                Collections.emptyList(),
+                Collections.emptyList());
+        assertEquals("Template with $$$", processor.process(template, Collections.emptyList()));
     }
 
     private void resolveVar(String value, VariableType type) {
@@ -82,7 +91,7 @@ class SpelTemplateProcessorTest {
                 prefix + "$" + varName + "$" + postfix,
                 List.of(new TemplateVariable("var1", type)),
                 List.of());
-        String result = resolver.process(template, List.of(new MessageVariable(varName, value)));
+        String result = processor.process(template, List.of(new MessageVariable(varName, value)));
         assertEquals(prefix + value + postfix, result);
     }
 }

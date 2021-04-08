@@ -3,6 +3,7 @@ package com.github.kuzznya.jb.message.service.template;
 import com.github.kuzznya.jb.message.exception.TemplateProcessingException;
 import com.github.kuzznya.jb.message.model.MessageTemplate;
 import com.github.kuzznya.jb.message.model.MessageVariable;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.expression.EvaluationContext;
 import org.springframework.expression.ExpressionParser;
 import org.springframework.expression.ParserContext;
@@ -16,10 +17,13 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 public class SpelTemplateProcessor implements TemplateProcessor {
 
     private final ExpressionParser expressionParser;
     private final ParserContext parserContext;
+
+    private static final String DOLLAR_REPLACEMENT = "\uFFFDS";
 
     public SpelTemplateProcessor() {
         expressionParser = new SpelExpressionParser();
@@ -46,10 +50,16 @@ public class SpelTemplateProcessor implements TemplateProcessor {
                 .filter(var -> evaluationContext.lookupVariable(var.getKey()) == null)
                 .forEach(var -> evaluationContext.setVariable(var.getKey(), var.getValue()));
 
+        String templateString = template.getTemplate().replace("\\$", DOLLAR_REPLACEMENT);
+
         try {
-            return expressionParser.parseExpression(template.getTemplate(), parserContext)
+            String result = expressionParser.parseExpression(templateString, parserContext)
                     .getValue(evaluationContext, String.class);
+            if (result == null)
+                throw new NullPointerException("Template processing returned null value");
+            return result.replace(DOLLAR_REPLACEMENT, "$");
         } catch (Exception e) {
+            log.error("Cannot process template", e);
             throw new TemplateProcessingException(e);
         }
     }
