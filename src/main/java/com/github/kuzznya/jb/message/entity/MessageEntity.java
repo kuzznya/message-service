@@ -20,5 +20,5 @@ public class MessageEntity {
     MessageTemplateEntity template;
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     List<VariableValueEntity> variables;
-    String interval;
+    String sendInterval;
 }
