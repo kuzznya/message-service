@@ -1,8 +1,10 @@
 package com.github.kuzznya.jb.message.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.github.kuzznya.jb.message.exception.IncompatibleVarTypeException;
 
 public enum VariableType {
+    @JsonProperty("string")
     STRING {
         @Override
         public Object parseValue(String value) {
@@ -10,6 +12,7 @@ public enum VariableType {
         }
     },
 
+    @JsonProperty("int")
     INT {
         @Override
         public Object parseValue(String value) {
@@ -21,6 +24,7 @@ public enum VariableType {
         }
     },
 
+    @JsonProperty("float")
     FLOAT {
         @Override
         public Object parseValue(String value) {

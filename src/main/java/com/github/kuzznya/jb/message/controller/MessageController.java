@@ -5,6 +5,10 @@ import com.github.kuzznya.jb.message.model.Message;
 import com.github.kuzznya.jb.message.model.MessageTemplate;
 import com.github.kuzznya.jb.message.model.MessageVariable;
 import com.github.kuzznya.jb.message.service.MessageService;
+import io.swagger.v3.oas.annotations.OpenAPIDefinition;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.info.Info;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,27 +18,42 @@ import java.util.stream.Collectors;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1")
+@OpenAPIDefinition(info = @Info(title = "JetBrains into task: message service", version = "v1"))
 public class MessageController {
 
     private final MessageService messageService;
 
     @PostMapping("/templates")
+    @Operation(summary = "Save new message template", responses = {
+            @ApiResponse(responseCode = "200", description = "OK"),
+            @ApiResponse(responseCode = "409", description = "Template with passed ID already exists")
+    })
     public MessageTemplate saveTemplate(@RequestBody MessageTemplate template) {
         return messageService.save(template);
     }
 
     @GetMapping("/templates/{id}")
+    @Operation(summary = "Get message template by ID", responses = {
+            @ApiResponse(responseCode = "200", description = "OK"),
+            @ApiResponse(responseCode = "404", description = "Template not found")
+    })
     public MessageTemplate getTemplate(@PathVariable String id) {
         return messageService.getTemplate(id)
                 .orElseThrow(() -> new NotFoundException("Template with id " + id + " not found"));
     }
 
     @DeleteMapping("/templates/{id}")
+    @Operation(summary = "Delete message template by ID")
     public void deleteTemplate(@PathVariable String id) {
         messageService.deleteTemplate(id);
     }
 
     @GetMapping("/templates/{id}/message")
+    @Operation(summary = "Process message template using passed variables and return resulting message", responses = {
+            @ApiResponse(responseCode = "200", description = "OK"),
+            @ApiResponse(responseCode = "404", description = "Template not found"),
+            @ApiResponse(responseCode = "400", description = "Template processing error")
+    })
     public Message processMessage(@PathVariable String id, @RequestParam Map<String, String> variables) {
         var templateVars = variables.entrySet()
                 .stream()
@@ -44,6 +63,12 @@ public class MessageController {
     }
 
     @PostMapping("/templates/{id}/message")
+    @Operation(summary = "Process message using passed variables and send to recipients", responses = {
+            @ApiResponse(responseCode = "200", description = "OK"),
+            @ApiResponse(responseCode = "404", description = "Template not found"),
+            @ApiResponse(responseCode = "400", description = "Template processing error"),
+            @ApiResponse(responseCode = "503", description = "Message sending error")
+    })
     public Message sendMessage(@PathVariable String id, @RequestParam Map<String, String> variables) {
         var templateVars = variables.entrySet()
                 .stream()

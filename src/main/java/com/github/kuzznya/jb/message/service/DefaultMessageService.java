@@ -2,6 +2,7 @@ package com.github.kuzznya.jb.message.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.kuzznya.jb.message.entity.MessageTemplateEntity;
+import com.github.kuzznya.jb.message.exception.ConflictException;
 import com.github.kuzznya.jb.message.exception.NotFoundException;
 import com.github.kuzznya.jb.message.model.Message;
 import com.github.kuzznya.jb.message.model.MessageTemplate;
@@ -28,6 +29,8 @@ public class DefaultMessageService implements MessageService {
 
     @Override
     public MessageTemplate save(MessageTemplate template) {
+        if (templateRepository.existsById(template.getId()))
+            throw new ConflictException("Template with ID " + template.getId() + " already exists");
         var entity = objectMapper.convertValue(template, MessageTemplateEntity.class);
         var result = templateRepository.save(entity);
         return objectMapper.convertValue(result, MessageTemplate.class);
