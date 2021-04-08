@@ -18,7 +18,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.net.URI;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -76,11 +75,11 @@ class DefaultMessageServiceTest {
         var validEntity = new MessageTemplateEntity(
                 "testId",
                 "The Answer to the Ultimate Question of $var1$ is $var2$",
-                null, new ArrayList<>(), null);
-        validEntity.addVariableDefinition(
-                new VariableDefinitionEntity(null, "var1", VariableType.STRING, null));
-        validEntity.addVariableDefinition(
-                new VariableDefinitionEntity(null, "var2", VariableType.INT, null));
+                null,
+                List.of(
+                        new VariableDefinitionEntity(null, "var1", VariableType.STRING),
+                        new VariableDefinitionEntity(null, "var2", VariableType.INT)),
+                null);
 
         Mockito.when(templateRepository.findById(Mockito.eq("testId"))).thenReturn(Optional.of(validEntity));
 
@@ -94,9 +93,9 @@ class DefaultMessageServiceTest {
         var validEntity = new MessageTemplateEntity(
                 "testId",
                 "The Answer to the Ultimate Question of $var1$ is $var2$",
-                null, new ArrayList<>(), null);
-        validEntity.addVariableDefinition(
-                new VariableDefinitionEntity(null, "var2", VariableType.INT, null));
+                null,
+                List.of(new VariableDefinitionEntity(null, "var2", VariableType.INT)),
+                null);
 
         Mockito.when(templateRepository.findById(Mockito.eq("testId"))).thenReturn(Optional.of(validEntity));
 

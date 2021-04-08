@@ -34,6 +34,11 @@ public class DefaultMessageService implements MessageService {
     }
 
     @Override
+    public void deleteTemplate(String id) {
+        templateRepository.deleteById(id);
+    }
+
+    @Override
     public Optional<MessageTemplate> getTemplate(String id) {
         return templateRepository.findById(id)
                 .map(entity -> objectMapper.convertValue(entity, MessageTemplate.class));

@@ -1,6 +1,5 @@
 package com.github.kuzznya.jb.message.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.github.kuzznya.jb.message.model.VariableType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -20,7 +19,4 @@ public class VariableDefinitionEntity {
     private String key;
     @Enumerated(EnumType.STRING)
     private VariableType type;
-    @ManyToOne
-    @JsonIgnore
-    private MessageTemplateEntity template;
 }

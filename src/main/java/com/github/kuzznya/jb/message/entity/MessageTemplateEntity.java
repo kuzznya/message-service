@@ -20,13 +20,8 @@ public class MessageTemplateEntity {
     private String template;
     @ElementCollection
     private List<URI> recipients;
-    @OneToMany(mappedBy = "template", orphanRemoval = true, cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.EAGER, orphanRemoval = true, cascade = CascadeType.ALL)
     private List<VariableDefinitionEntity> variables;
-    @OneToMany(mappedBy = "template", orphanRemoval = true, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "template", fetch = FetchType.LAZY, orphanRemoval = true, cascade = CascadeType.ALL)
     private List<MessageEntity> messages;
-
-    public void addVariableDefinition(VariableDefinitionEntity definition) {
-        variables.add(definition);
-        definition.setTemplate(this);
-    }
 }
