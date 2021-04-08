@@ -7,8 +7,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.client.RestTemplate;
 
 @Configuration
-@EnableConfigurationProperties(WebClientProperties.class)
-public class WebConfiguration {
+@EnableConfigurationProperties({WebClientProperties.class, EmailProperties.class})
+public class ServiceConfiguration {
 
     @Bean
     public RestTemplate restTemplate(RestTemplateBuilder builder, WebClientProperties properties) {

@@ -1,7 +1,6 @@
-package com.github.kuzznya.jb.message.service;
+package com.github.kuzznya.jb.message.service.sender;
 
-import com.github.kuzznya.jb.message.config.WebConfiguration;
-import com.github.kuzznya.jb.message.service.sender.WebSenderService;
+import com.github.kuzznya.jb.message.config.ServiceConfiguration;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,10 +9,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.net.URI;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 @SpringBootTest(
-        classes = {WebConfiguration.class, RestTemplateAutoConfiguration.class, WebSenderService.class},
+        classes = {ServiceConfiguration.class, RestTemplateAutoConfiguration.class, WebSenderService.class},
         properties = "logging.level.com.github.kuzznya=DEBUG")
 @Disabled("Performs actual web request, requires internet connection")
 class WebSenderServiceTest {

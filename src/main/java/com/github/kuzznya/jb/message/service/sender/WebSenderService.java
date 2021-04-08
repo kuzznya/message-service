@@ -17,6 +17,11 @@ public class WebSenderService implements SenderService {
     private final RestTemplate restTemplate;
 
     @Override
+    public boolean canSend(URI recipient) {
+        return recipient.getScheme().startsWith("http");
+    }
+
+    @Override
     public void send(String message, URI recipient) {
         try {
             String response = restTemplate.postForObject(recipient, new Message(message), String.class);

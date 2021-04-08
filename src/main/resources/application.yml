@@ -11,6 +11,23 @@ spring:
     driver-class-name: org.h2.Driver
     username: ${DB_USERNAME:sa}
     password: ${DB_PASSWORD:password}
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ${MAIL_USERNAME}
+    password: ${MAIL_PASSWORD}
+    test-connection: true
+    properties:
+      mail.smtp:
+        auth: true
+        starttls.enable: true
+
+email:
+  from: ${spring.mail.username}
+  subject: Message service notification
 
 web-client:
   connect-timeout: 10s
