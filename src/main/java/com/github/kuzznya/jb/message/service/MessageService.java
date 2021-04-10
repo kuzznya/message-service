@@ -9,6 +9,7 @@ import java.util.Optional;
 
 public interface MessageService {
     MessageTemplate save(MessageTemplate template);
+    List<MessageTemplate> getAllTemplates();
     void deleteTemplate(String id);
     Optional<MessageTemplate> getTemplate(String id);
     Message processMessage(String templateId, List<MessageVariable> variables);

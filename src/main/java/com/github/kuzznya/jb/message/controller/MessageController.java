@@ -10,17 +10,18 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1")
+@RequestMapping("/api/v1/templates")
 public class MessageController {
 
     private final MessageService messageService;
 
-    @PostMapping("/templates")
+    @PostMapping
     @Operation(summary = "Save new message template", responses = {
             @ApiResponse(responseCode = "200", description = "OK"),
             @ApiResponse(responseCode = "409", description = "Template with passed ID already exists")
@@ -29,7 +30,13 @@ public class MessageController {
         return messageService.save(template);
     }
 
-    @GetMapping("/templates/{id}")
+    @GetMapping
+    @Operation(summary = "Get all templates")
+    public List<MessageTemplate> getAllTemplates() {
+        return messageService.getAllTemplates();
+    }
+
+    @GetMapping("/{id}")
     @Operation(summary = "Get message template by ID", responses = {
             @ApiResponse(responseCode = "200", description = "OK"),
             @ApiResponse(responseCode = "404", description = "Template not found")
@@ -39,13 +46,13 @@ public class MessageController {
                 .orElseThrow(() -> new NotFoundException("Template with id " + id + " not found"));
     }
 
-    @DeleteMapping("/templates/{id}")
+    @DeleteMapping("/{id}")
     @Operation(summary = "Delete message template by ID")
     public void deleteTemplate(@PathVariable String id) {
         messageService.deleteTemplate(id);
     }
 
-    @GetMapping("/templates/{id}/message")
+    @GetMapping("/{id}/message")
     @Operation(summary = "Process message template using passed variables and return resulting message", responses = {
             @ApiResponse(responseCode = "200", description = "OK"),
             @ApiResponse(responseCode = "404", description = "Template not found"),
@@ -59,7 +66,7 @@ public class MessageController {
         return messageService.processMessage(id, templateVars);
     }
 
-    @PostMapping("/templates/{id}/message")
+    @PostMapping("/{id}/message")
     @Operation(summary = "Process message using passed variables and send to recipients", responses = {
             @ApiResponse(responseCode = "200", description = "OK"),
             @ApiResponse(responseCode = "404", description = "Template not found"),

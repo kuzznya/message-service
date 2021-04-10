@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -35,6 +36,14 @@ public class DefaultMessageService implements MessageService {
         var entity = objectMapper.convertValue(template, MessageTemplateEntity.class);
         var result = templateRepository.save(entity);
         return objectMapper.convertValue(result, MessageTemplate.class);
+    }
+
+    @Override
+    public List<MessageTemplate> getAllTemplates() {
+        return templateRepository.findAll()
+                .stream()
+                .map(entity -> objectMapper.convertValue(entity, MessageTemplate.class))
+                .collect(Collectors.toList());
     }
 
     @Override
