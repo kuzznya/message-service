@@ -1,7 +1,9 @@
 package com.github.kuzznya.jb.message.service.sender;
 
 import com.github.kuzznya.jb.message.config.EmailProperties;
+import com.github.kuzznya.jb.message.exception.MessageSendException;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.validator.routines.EmailValidator;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
@@ -17,13 +19,14 @@ public class EmailSenderService implements SenderService {
 
     @Override
     public boolean canSend(URI recipient) {
-        return recipient.getScheme().equals("mailto");
+        return recipient.getScheme().equals("mailto") &&
+                isEmailValid(recipient.toString().substring(7));
     }
 
     @Override
     public void send(String message, URI recipient) {
-        if (!recipient.getScheme().equals("mailto"))
-            throw new UnsupportedOperationException("Unknown scheme " + recipient.getScheme());
+        if (!canSend(recipient))
+            throw new MessageSendException("Unsupported recipient " + recipient);
 
         String to = recipient.toString().substring(7); // remove 'mailto:'
 
@@ -33,5 +36,9 @@ public class EmailSenderService implements SenderService {
         mail.setSubject(emailProperties.getSubject());
         mail.setText(message);
         mailSender.send(mail);
+    }
+
+    private boolean isEmailValid(String email) {
+        return EmailValidator.getInstance().isValid(email);
     }
 }

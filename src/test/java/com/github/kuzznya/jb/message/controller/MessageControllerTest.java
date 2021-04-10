@@ -120,6 +120,16 @@ class MessageControllerTest {
     }
 
     @Test
+    void getTemplate_WhenNoTemplate_Return404() throws Exception {
+        Mockito.when(messageService.getTemplate(Mockito.any()))
+                .thenReturn(Optional.empty());
+
+        mockMvc.perform(MockMvcRequestBuilders
+                .get("/api/v1/templates/id1"))
+                .andExpect(MockMvcResultMatchers.status().isNotFound());
+    }
+
+    @Test
     void deleteTemplate() throws Exception {
         Mockito.doNothing().when(messageService).deleteTemplate(Mockito.any());
 
@@ -134,7 +144,9 @@ class MessageControllerTest {
                 .thenReturn(new Message("Test message"));
 
         mockMvc.perform(MockMvcRequestBuilders
-                .get("/api/v1/templates/id1/message"))
+                .get("/api/v1/templates/id1/message")
+                .param("var1", "var1")
+                .param("var2", "var2"))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content().json("{\"message\": \"Test message\"}"));
     }
@@ -145,7 +157,9 @@ class MessageControllerTest {
                 .thenReturn(new Message("Test message"));
 
         mockMvc.perform(MockMvcRequestBuilders
-                .post("/api/v1/templates/id1/message"))
+                .post("/api/v1/templates/id1/message")
+                .param("var1", "var1")
+                .param("var2", "var2"))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content().json("{\"message\": \"Test message\"}"));
     }
