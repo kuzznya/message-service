@@ -1,6 +1,7 @@
 package com.github.kuzznya.jb.message.entity;
 
 import com.fasterxml.jackson.annotation.JsonAlias;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -23,5 +24,6 @@ public class MessageTemplateEntity {
     @OneToMany(fetch = FetchType.EAGER, orphanRemoval = true, cascade = CascadeType.ALL)
     private List<VariableDefinitionEntity> variables;
     @OneToMany(mappedBy = "template", fetch = FetchType.LAZY, orphanRemoval = true, cascade = CascadeType.ALL)
-    private List<MessageEntity> messages;
+    @JsonIgnore
+    private List<ScheduledMessageEntity> messages;
 }

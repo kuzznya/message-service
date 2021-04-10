@@ -13,6 +13,7 @@ import com.github.kuzznya.jb.message.service.template.TemplateProcessor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -55,6 +56,7 @@ public class DefaultMessageService implements MessageService {
     }
 
     @Override
+    @Transactional
     public Message send(String templateId, List<MessageVariable> variables) {
         var template = getTemplate(templateId)
                 .orElseThrow(() -> new NotFoundException("Template with id " + templateId + " not found"));

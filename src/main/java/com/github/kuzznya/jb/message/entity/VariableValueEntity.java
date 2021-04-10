@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.ManyToOne;
 import java.util.UUID;
 
 @Entity
@@ -18,7 +17,6 @@ public class VariableValueEntity {
     @Id
     @GeneratedValue
     private UUID id;
-    @ManyToOne(optional = false)
-    private VariableDefinitionEntity definition;
+    private String key;
     private String value;
 }

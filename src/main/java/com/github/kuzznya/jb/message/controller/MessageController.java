@@ -5,9 +5,7 @@ import com.github.kuzznya.jb.message.model.Message;
 import com.github.kuzznya.jb.message.model.MessageTemplate;
 import com.github.kuzznya.jb.message.model.MessageVariable;
 import com.github.kuzznya.jb.message.service.MessageService;
-import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.info.Info;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -18,7 +16,6 @@ import java.util.stream.Collectors;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1")
-@OpenAPIDefinition(info = @Info(title = "JetBrains into task: message service", version = "v1"))
 public class MessageController {
 
     private final MessageService messageService;

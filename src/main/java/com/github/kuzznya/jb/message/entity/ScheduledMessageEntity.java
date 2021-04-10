@@ -12,7 +12,7 @@ import java.util.UUID;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class MessageEntity {
+public class ScheduledMessageEntity {
     @Id
     @GeneratedValue
     UUID id;
