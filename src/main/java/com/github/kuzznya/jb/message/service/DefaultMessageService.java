@@ -69,8 +69,8 @@ public class DefaultMessageService implements MessageService {
     public Message send(String templateId, List<MessageVariable> variables) {
         var template = getTemplate(templateId)
                 .orElseThrow(() -> new NotFoundException("Template with id " + templateId + " not found"));
-        var message = new Message(templateProcessor.process(template, variables));
-        template.getRecipients().forEach(uri -> senderService.send(message.getMessage(), uri));
-        return message;
+        var text = templateProcessor.process(template, variables);
+        template.getRecipients().forEach(uri -> senderService.send(text, uri));
+        return new Message(text);
     }
 }
