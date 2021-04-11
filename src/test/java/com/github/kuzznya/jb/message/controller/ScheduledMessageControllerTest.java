@@ -83,7 +83,7 @@ class ScheduledMessageControllerTest {
 
     @Test
     void removeScheduledMessage() throws Exception {
-        Mockito.doNothing().when(messageSender).delete(Mockito.any());
+        Mockito.doNothing().when(messageSender).cancel(Mockito.any());
 
         mockMvc.perform(MockMvcRequestBuilders.delete("/api/v1/messages/scheduled/" + UUID.randomUUID()))
                 .andExpect(MockMvcResultMatchers.status().isOk());

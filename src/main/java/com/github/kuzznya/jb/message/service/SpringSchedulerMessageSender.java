@@ -1,6 +1,5 @@
 package com.github.kuzznya.jb.message.service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.kuzznya.jb.message.entity.ScheduledMessageEntity;
 import com.github.kuzznya.jb.message.entity.VariableValueEntity;
 import com.github.kuzznya.jb.message.exception.IllegalFormatException;
@@ -33,7 +32,6 @@ public class SpringSchedulerMessageSender implements ScheduledMessageSender {
     private final TemplateRepository templateRepository;
     private final MessageRepository messageRepository;
     private final TaskScheduler scheduler;
-    private final ObjectMapper objectMapper;
 
     private final Map<UUID, ScheduledFuture<?>> scheduledTasks = new HashMap<>();
 
@@ -47,7 +45,7 @@ public class SpringSchedulerMessageSender implements ScheduledMessageSender {
 
     @Override
     public ScheduledMessage register(ScheduledMessage message) {
-        messageService.processMessage(message.getTemplateId(), message.getVariables());
+        messageService.processMessage(message.getTemplateId(), message.getVariables()); // assert that message can be processed
         var entity = modelToEntity(message);
         entity.setId(null);
         var savedModel = entityToModel(messageRepository.save(entity));
@@ -64,7 +62,7 @@ public class SpringSchedulerMessageSender implements ScheduledMessageSender {
     }
 
     @Override
-    public void delete(UUID id) {
+    public void cancel(UUID id) {
         Optional.ofNullable(scheduledTasks.remove(id))
                 .ifPresent(task -> task.cancel(true));
         try {
@@ -81,9 +79,9 @@ public class SpringSchedulerMessageSender implements ScheduledMessageSender {
         scheduledTasks.put(message.getId(), future);
     }
 
-    void sendMessage(ScheduledMessage message) {
+    private void sendMessage(ScheduledMessage message) {
         if (!messageRepository.existsById(message.getId())) {
-            delete(message.getId());
+            cancel(message.getId());
         }
         try {
             messageService.send(message.getTemplateId(), message.getVariables());
@@ -109,7 +107,7 @@ public class SpringSchedulerMessageSender implements ScheduledMessageSender {
     private ScheduledMessage entityToModel(ScheduledMessageEntity entity) {
         var variables = entity.getVariables()
                 .stream()
-                .map(valueEntity -> objectMapper.convertValue(valueEntity, MessageVariable.class))
+                .map(valueEntity -> new MessageVariable(valueEntity.getKey(), valueEntity.getValue()))
                 .collect(Collectors.toList());
         return new ScheduledMessage(entity.getId(), entity.getTemplate().getId(), variables, entity.getSendInterval());
     }

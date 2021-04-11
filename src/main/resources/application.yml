@@ -24,6 +24,11 @@ spring:
       mail.smtp:
         auth: true
         starttls.enable: true
+  task:
+    execution:
+      pool:
+        core-size: 8
+        allow-core-thread-timeout: false
 
 email:
   from: ${spring.mail.username}

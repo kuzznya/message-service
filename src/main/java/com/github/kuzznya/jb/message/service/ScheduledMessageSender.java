@@ -8,5 +8,5 @@ import java.util.UUID;
 public interface ScheduledMessageSender {
     ScheduledMessage register(ScheduledMessage message);
     List<ScheduledMessage> getScheduledMessages();
-    void delete(UUID id);
+    void cancel(UUID id);
 }

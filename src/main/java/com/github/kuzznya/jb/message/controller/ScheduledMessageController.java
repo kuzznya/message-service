@@ -36,6 +36,6 @@ public class ScheduledMessageController {
     @DeleteMapping("/{id}")
     @Operation(summary = "Cancel scheduled message")
     public void removeScheduledMessage(@PathVariable UUID id) {
-        messageSender.delete(id);
+        messageSender.cancel(id);
     }
 }
